@@ -2,9 +2,11 @@
 #define W5N_DATE_H
 
 #include <string>
+#include <sstream>
 
 struct Date
 {
+    Date();
     unsigned year;
     unsigned month;
     unsigned day;

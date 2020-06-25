@@ -1,23 +1,43 @@
 #include "../include/Diary.h"
+#include "../include/Timer.h"
 #include<iostream>
 
-Diary::Diary(const std::string& filename) : messages (nullptr), messages_size(0)
+Diary::Diary(const std::string& name) : filename(name), messages (nullptr), 
+messages_size(0), messages_capacity(10)
 {
-    messages_capacity = 10;
+
     messages = new Message[messages_capacity];
+}
+
+Diary::~Diary()
+{
+    delete[] messages;
 }
 
 void Diary::add(const std::string& message)
 {
-
-    // adcionando 10 mensagens 
-    for (size_t i = 0; i < messages_capacity; i++)
+        if (messages_size == messages_capacity)
     {
-        messages[messages_size].content = message;
-        std::cout<<messages[messages_size].content << " " << i <<std::endl;
-        messages_size++;
+        return;
     }
-    
+
+    // adcionando data atual
+    Date d;
+    d.set_from_string(get_current_date());
+
+    // adcionando tempo atual
+    Time t;
+    t.set_from_string(get_current_time());
+
+
+    // adcionando mensagens
+    Message m;
+    m.content = message;
+    m.date = d;
+    m.time = t;
+
+    messages[messages_size] = m;
+    messages_size++;
 }
 
 void Diary::write()
