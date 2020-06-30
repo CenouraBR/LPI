@@ -2,7 +2,6 @@
 #define W5N_DATE_H
 
 #include <string>
-#include <sstream>
 
 struct Date
 {
@@ -12,5 +11,6 @@ struct Date
     unsigned day;
 
     void set_from_string(const std::string& date);
+    std::string to_string();
 };
 #endif

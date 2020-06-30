@@ -1,5 +1,5 @@
-#ifndef W5N_TIMER_H
-#define W5N_TIMER_H
+#ifndef W5N_HELPER_H
+#define W5N_HELPER_H
 
 #include <string>
 
