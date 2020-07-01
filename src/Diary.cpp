@@ -6,52 +6,11 @@
 
 #include "../include/Timer.h"
 
-Diary::Diary(const std::string& name) : filename(name), messages(nullptr), messages_size(0), messages_capacity(10) {
-  messages = new Message[messages_capacity];
-
-  std::fstream read_file(filename, std::ios::in);
-  std::string linha;
-  std::string date;
-  std::string time;
-
-  Date d;
-  Time t;
-
-  if (!read_file.is_open()) {
-    std::cout << "Erro ao abrir o arquivo" << std::endl;
-    return;
-  }
-
-  while (!read_file.eof()) {
-    if (messages_size >= messages_capacity) {
-      increase_capacity();
-    }
-    getline(read_file, linha);
-    if (linha[0] == '#') {
-      date = linha.substr(2, 10);
-      d.set_from_string(date);
-    }
-    if (linha[0] == '-') {
-      time = linha.substr(2, 8);
-      t.set_from_string(time);
-      linha = linha.substr(11);
-      messages[messages_size].date = d;
-      messages[messages_size].time = t;
-      messages[messages_size].content = linha;
-      ++messages_size;
-    }
-  }
-}
-
-Diary::~Diary() {
-  delete[] messages;
+Diary::Diary(const std::string& name) : filename(name) {
+  open_messages();
 }
 
 void Diary::add(const std::string& message) {
-  if (messages_size >= messages_capacity) {
-    increase_capacity();
-  }
-
   Date d;
   Time t;
   d.set_from_string(get_current_date());
@@ -61,53 +20,78 @@ void Diary::add(const std::string& message) {
   m.content = message;
   m.date = d;
   m.time = t;
-
-  messages[messages_size] = m;
-  messages_size++;
+  messages.push_back(m);
 }
 
 void Diary::write() {
-  bool verificador = false;
+  std::fstream output_file("diary.txt", std::ios::out);
+  int verificador = 0;
 
-  std::fstream write_file("diary.txt", std::ios::out);
-  // gravar as mensagens no disco
-  for (int i = 0; i < messages_size; ++i) {
-    std::fstream read_file("diary.txt", std::ios::in);
+  for (size_t i = 0; i < messages.size(); ++i) {
+    std::fstream input_file("diary.txt", std::ios::in);
+
     //verificar se data já existe
     std::string comparador;
-    while (!read_file.eof()) {
-      getline(read_file, comparador);
+
+    while (!input_file.eof()) {
+      getline(input_file, comparador);
+
       if (comparador == "# " + messages[i].date.to_string()) {
-        write_file << "- " << messages[i].time.to_string() << " " << messages[i].content << std::endl;
-        verificador = true;
+        output_file << "- " << messages[i].time.to_string() << " " << messages[i].content << std::endl;
+        verificador = 1;
       }
     }
     if (verificador) {
-      verificador = false;
+      verificador = 0;
       continue;
     }
 
-    write_file << "\n# " << messages[i].date.to_string() << std::endl
-               << "\n- " << messages[i].time.to_string() << " " << messages[i].content << std::endl;
+    output_file << "\n# " << messages[i].date.to_string() << std::endl
+                << "\n- " << messages[i].time.to_string() << " " << messages[i].content << std::endl;
   }
 }
 
-void Diary::increase_capacity() {
-  Message* messages2 = new Message[messages_capacity * 2];
-  for (int i = 0; i < messages_capacity; ++i) {
-    messages2[i] = messages[i];
-  }
-  delete[] messages;
-  messages = messages2;
+std::vector<Message*> Diary::search(const std::string& what) {
+  std::vector<Message*> srch;
 
-  messages_capacity *= 2;
-}
-
-Message* Diary::search(const std::string& what) {
-  for (size_t i = 0; i < messages_size; ++i) {
+  for (size_t i = 0; i < messages.size(); ++i) {
     if (messages[i].content.find(what) != std::string::npos) {
-      return messages + i;
+      srch.push_back(&messages[i]);
     }
   }
-  return nullptr;
+
+  return srch;
+}
+
+void Diary::open_messages() {
+  std::fstream input_file(filename, std::ios::in);
+  std::string linha;
+  std::string date;
+  std::string time;
+
+  Date d;
+  Time t;
+
+  if (!input_file.is_open()) {
+    std::cout << "Erro ao abrir o arquivo" << std::endl;
+    return;
+  }
+
+  while (!input_file.eof()) {
+    getline(input_file, linha);
+    if (linha[0] == '#') {
+      date = linha.substr(2, 10);
+      d.set_from_string(date);
+    }
+    if (linha[0] == '-') {
+      time = linha.substr(2, 8);
+      t.set_from_string(time);
+      linha = linha.substr(11);
+      Message m;
+      m.date = d;
+      m.time = t;
+      m.content = linha;
+      messages.push_back(m);
+    }
+  }
 }

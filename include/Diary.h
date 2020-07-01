@@ -2,21 +2,19 @@
 #define W5N_DIARY_H
 
 #include <string>
+#include <vector>
 
 #include "Message.h"
 
 struct Diary {
   Diary(const std::string& filename);
-  ~Diary();
 
   std::string filename;
-  Message* messages;
-  size_t messages_size;
-  size_t messages_capacity;
+  std::vector<Message> messages;
+  std::vector<Message*> search(const std::string& what);
 
   void add(const std::string& message);
-  Message* search(const std::string& what);
   void write();
-  void increase_capacity();
+  void open_messages();
 };
 #endif

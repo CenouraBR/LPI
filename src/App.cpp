@@ -49,7 +49,7 @@ void App::add(const std::string message) {
 }
 
 void App::list_messages() {
-  for (size_t i = 0; i < diary.messages_size; ++i) {
+  for (size_t i = 0; i < diary.messages.size(); ++i) {
     const Message& message = diary.messages[i];
     std::cout << "-" << message.content << std::endl;
   }
@@ -63,10 +63,13 @@ void App::search() {
 }
 
 void App::search(const std::string& what) {
-  Message* message = diary.search(what);
-  if (message) {
+  std::vector<Message*> srch = diary.search(what);
+  if (not srch.empty()) {
     std::cout << "found!" << std::endl;
-    std::cout << message->content << std::endl;
+
+    for (size_t i = 0; i < srch.size(); i++) {
+      std::cout << srch[i]->content << std::endl;
+    }
     return;
   }
   std::cout << "Not found." << std::endl;
