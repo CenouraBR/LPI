@@ -27,5 +27,6 @@ Timer.o: src/Timer.cpp include/Timer.h
 
 clean:
 	rm -f *.o
+	rm $(PROGRAM)
 
 .PHONY: all clean

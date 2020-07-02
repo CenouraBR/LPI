@@ -7,6 +7,7 @@
 #include "../include/Timer.h"
 
 Diary::Diary(const std::string& name) : filename(name) {
+  // abrindo as mensagens já guardadas
   open_messages();
 }
 
