@@ -1,13 +1,13 @@
 #include "../include/App.h"
 
+#include <fstream>
 #include <iostream>
 #include <string>
-
 App::App(const std::string& filename) : diary(filename) {
 }
-
 int App::run(int argc, char* argv[]) {
   programname = argv[0];
+
   if (argc == 1) {
     return show_usage();
   }
@@ -21,13 +21,41 @@ int App::run(int argc, char* argv[]) {
       add(argv[2]);
     }
   } else if (action == "list") {
-    list_messages();
+    if (argc == 2) {
+      list_messages();
+    } else {
+      list_messages(argv[2]);
+    }
+
   } else if (action == "search") {
     if (argc == 2) {
       search();
     } else {
       search(argv[2]);
     }
+  } else if (action == "interactive") {
+    int menu = 0;
+    do {
+      std::cout << "Diário 1.0" << std::endl;
+      std::cout << "\nSelecione uma ação:" << std::endl;
+      std::cout << "\n1) Listar mensagens" << std::endl;
+      std::cout << "2) Adcionar nova mensagem" << std::endl;
+      std::cout << "3) Proucurar uma mensagem" << std::endl;
+      std::cout << "\n0) Finalizar" << std::endl;
+      std::cin >> menu;
+      std::cin.ignore();
+
+      if (menu == 1) {
+        list_messages();
+        std::cout << std::endl;
+
+      } else if (menu == 2) {
+        add();
+
+      } else if (menu == 3) {
+        search();
+      }
+    } while (menu != 0);
   } else {
     return show_usage();
   }
@@ -49,10 +77,11 @@ void App::add(const std::string message) {
 }
 
 void App::list_messages() {
-  for (size_t i = 0; i < diary.messages.size(); ++i) {
-    const Message& message = diary.messages[i];
-    std::cout << "-" << message.content << std::endl;
-  }
+  diary.list_messages();
+}
+void App::list_messages(std::string format) {
+  diary.change_format(format);
+  diary.list_messages();
 }
 
 void App::search() {
@@ -77,7 +106,8 @@ void App::search(const std::string& what) {
 
 int App::show_usage() {
   std::cout << "Uso: " << programname << " add <mensagem>" << std::endl;
-  std::cout << "Uso: " << programname << " list" << std::endl;
+  std::cout << "Uso: " << programname << " list <format>" << std::endl;
   std::cout << "Uso: " << programname << " search <argument>" << std::endl;
+  std::cout << "Uso: " << programname << "interactive" << std::endl;
   return 1;
 }

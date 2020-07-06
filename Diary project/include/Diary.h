@@ -16,5 +16,7 @@ struct Diary {
   void add(const std::string& message);
   void write();
   void open_messages();
+  void list_messages();
+  void change_format(std::string format);
 };
 #endif
