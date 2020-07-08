@@ -6,5 +6,9 @@ class Agencia {
  public:
   std::string nome;
   int numero;
+  static int qnt_agencias;
+
+  Agencia();
+  ~Agencia();
 };
 #endif

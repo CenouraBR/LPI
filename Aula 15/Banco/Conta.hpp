@@ -12,6 +12,10 @@ class Conta {
   Cliente titular;
   float saldo;
   Agencia agencia;
+  static int qnt_contas;
+
+  Conta();
+  ~Conta();
 
   void saca(float valor);
   void deposita(float valor);
