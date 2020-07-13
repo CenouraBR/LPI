@@ -29,4 +29,7 @@ clean:
 	rm -f *.o
 	rm $(PROGRAM)
 
-.PHONY: all clean
+run:
+	./diary
+
+.PHONY: all clean run
