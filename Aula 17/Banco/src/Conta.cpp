@@ -1,4 +1,4 @@
-#include "Conta.hpp"
+#include "../include/Conta.hpp"
 
 int Conta::qnt_contas;
 
