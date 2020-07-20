@@ -2,9 +2,11 @@
 #define AGENCIA_HPP
 #include <string>
 
+using namespace std;
+
 class Agencia {
  public:
-  std::string nome;
+  string nome;
   int numero;
   static int qnt_agencias;
 
